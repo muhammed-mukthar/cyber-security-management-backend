@@ -2,24 +2,27 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { Configuration, OpenAIApi } = require("openai");
 const History = require("../models/historyModal");
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+
+const OpenAI = require("openai"); // Use require for JavaScript
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // Replace with your actual API key
 });
-const openai = new OpenAIApi(configuration);
 
 exports.summaryController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `Summarize this \n${text}`,
-      max_tokens: 500,
-      temperature: 0.5,
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: `Summarize this \n${text}` }],
+      model: "gpt-3.5-turbo",
     });
-    console.log(data);
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
+
+    console.log(chatCompletion.choices);
+
+    if (chatCompletion.choices) {
+      if (chatCompletion.choices[0].message.content) {
+        return res.status(200).json(chatCompletion.choices[0].message.content);
       }
     }
   } catch (err) {
@@ -32,15 +35,19 @@ exports.summaryController = async (req, res) => {
 exports.paragraphController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `write a detail paragraph about \n${text}`,
-      max_tokens: 500,
-      temperature: 0.5,
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [
+        { role: "user", content: `write a detail paragraph about \n${text}` },
+      ],
+      model: "gpt-3.5-turbo",
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
+
+    console.log(chatCompletion.choices);
+
+    if (chatCompletion.choices) {
+      if (chatCompletion.choices[0].message.content) {
+        return res.status(200).json(chatCompletion.choices[0].message.content);
       }
     }
   } catch (err) {
@@ -53,15 +60,17 @@ exports.paragraphController = async (req, res) => {
 exports.chatbotController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `${text}`,
-      max_tokens: 300,
-      temperature: 0.7,
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: `${text}` }],
+      model: "gpt-3.5-turbo",
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
+
+    console.log(chatCompletion.choices);
+
+    if (chatCompletion.choices) {
+      if (chatCompletion.choices[0].message.content) {
+        return res.status(200).json(chatCompletion.choices[0].message.content);
       }
     }
   } catch (err) {
@@ -74,15 +83,22 @@ exports.chatbotController = async (req, res) => {
 exports.jsconverterController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-002",
-      prompt: `/* convert these instructions into javascript code \n${text}`,
-      max_tokens: 400,
-      temperature: 0.25,
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `convert these instructions into Bash scripts \n${text}`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
+
+    console.log(chatCompletion.choices);
+
+    if (chatCompletion.choices) {
+      if (chatCompletion.choices[0].message.content) {
+        return res.status(200).json(chatCompletion.choices[0].message.content);
       }
     }
   } catch (err) {
@@ -157,15 +173,22 @@ exports.animeImageController = async (req, res) => {
 exports.emailController = async (req, res) => {
   try {
     const { text } = req.body;
-    const { data } = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: `write a email on \n${text}`,
-      max_tokens: 500,
-      temperature: 0.5,
+
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [
+        {
+          role: "user",
+          content: `write a email on \n${text}`,
+        },
+      ],
+      model: "gpt-3.5-turbo",
     });
-    if (data) {
-      if (data.choices[0].text) {
-        return res.status(200).json(data.choices[0].text);
+
+    console.log(chatCompletion.choices);
+
+    if (chatCompletion.choices) {
+      if (chatCompletion.choices[0].message.content) {
+        return res.status(200).json(chatCompletion.choices[0].message.content);
       }
     }
   } catch (err) {
